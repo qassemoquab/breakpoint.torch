@@ -1,8 +1,5 @@
-examplepackage.torch
+breakpoint.torch
 ====================
 
-A hello-world for torch packages
+A simple breakpoint script for Torch
 
-You can install the package by opening a terminal, changing directory into the folder and typing:
-
-luarocks make

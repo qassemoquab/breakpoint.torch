@@ -44,11 +44,8 @@ function debug_repl()
     -- copied from http://stackoverflow.com/questions/33068607/how-can-i-use-the-torch-repl-for-debugging
     require 'trepl'
 
-    -- optionally make a shallow copy of _G
-    local oldG = {}
-    for k, v in pairs(_G) do
-       oldG[k] = v
-    end
+    local save = {}
+    local empty = {}
 
     -- copy upvalues to _G
     local i = 1
@@ -56,6 +53,11 @@ function debug_repl()
     while true do
         local k, v = debug.getupvalue(func, i)
         if k ~= nil then
+            if _G[k] then
+               save[k] = _G[k]
+            else 
+               empty[k] = 1 
+            end
             _G[k] = v
         else
             break
@@ -68,6 +70,11 @@ function debug_repl()
     while true do
         local k, v = debug.getlocal(3, i)
         if k ~= nil then
+            if _G[k] then
+               save[k] = save[k] or _G[k]
+            else 
+               empty[k] = 1 
+            end
             _G[k] = v
         else
             break
@@ -77,8 +84,12 @@ function debug_repl()
 
     repl()
 
-    _G = oldG
-
+    for k,v in pairs(save) do
+       _G[k] = v
+    end
+    for k,v in pairs(empty) do
+       _G[k] = nil
+    end
 end
 
 
